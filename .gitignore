@@ -1,0 +1,8 @@
+# Large data files
+data/market_snapshots.csv
+data/market_snapshots.csv.gz
+data/*.bak
+
+# Logs
+monitor.log
+*.log
