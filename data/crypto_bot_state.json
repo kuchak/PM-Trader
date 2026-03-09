@@ -1,8 +1,20 @@
 {
   "bankroll": 225.0,
-  "positions": {},
-  "pnl": 42.46463099,
-  "wagered": 1044.1900000000003,
-  "wins": 94,
+  "positions": {
+    "bitcoin-up-or-down-march-9-12am-et": {
+      "asset": "BTC",
+      "tf": "1h",
+      "series": "btc-up-or-down-hourly",
+      "up_token_id": "19293138920787491172726778172027160519790963888036624141953661868586356502290",
+      "entry_prob": 0.915,
+      "shares": 16.0,
+      "cost": 14.64,
+      "entry_time": "2026-03-09T04:29:10.085455+00:00",
+      "end_str": "2026-03-09T05:00:00Z"
+    }
+  },
+  "pnl": 44.24963099,
+  "wagered": 1087.8950000000004,
+  "wins": 96,
   "losses": 9
 }
