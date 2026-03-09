@@ -60,13 +60,13 @@ MAX_PER_MARKET_PCT = 0.20  # never more than 20% of bankroll in one position
 # Balance sync: re-read live USDC balance every N cycles to stay accurate
 BALANCE_SYNC_EVERY = 10   # every 10 cycles = every ~5 minutes
 
-# ── Wallet isolation ────────────────────────────────────────────────────────
-# The sports bot and crypto bot share the same Polygon wallet.
-# WALLET_ALLOCATION is the hard cap on how much USDC this bot will ever use.
-# Set this to your intended crypto allocation (e.g. $150 of a $300 wallet).
-# The sports bot operates on whatever remains above this line.
-# Change before starting — does not affect already-open positions.
-WALLET_ALLOCATION = 225.0   # $ max this bot will deploy
+# ── Wallet sharing ──────────────────────────────────────────────────────────
+# The sports bot and crypto bot share the same Polygon wallet on a first-come
+# first-served basis. Both bots read the live USDC balance each cycle and size
+# bets off the full available balance. Whichever bot's order hits the CLOB first
+# wins the capital; the other sees a lower balance on its next sync cycle.
+# No hard cap — natural coordination via live balance reads.
+WALLET_ALLOCATION = float("inf")   # no cap — use full live wallet
 
 # On-chain position check — scan data API every N cycles to catch stuck/resolved positions
 API_EXIT_CHECK_EVERY = 5    # every 5 cycles = every ~2.5 minutes
@@ -288,15 +288,13 @@ class CryptoTrader:
         self._orphan_done: set = set()
 
         # Sync bankroll from chain on startup (live only)
-        # Cap at WALLET_ALLOCATION so sports bot and crypto bot never fight over the same funds.
+        # Both bots share the full wallet — first come first served at CLOB level.
         if not dry_run:
             live_bal = get_live_balance(self.client)
             if live_bal and live_bal > 0:
-                capped = min(live_bal, WALLET_ALLOCATION)
-                logger.info(f"  Live USDC: ${live_bal:.2f} | crypto allocation: ${capped:.2f} "
-                            f"(cap: ${WALLET_ALLOCATION:.0f})")
-                self.bankroll = capped
-                self.state["bankroll"] = capped
+                logger.info(f"  Live USDC: ${live_bal:.2f} (shared wallet, no cap)")
+                self.bankroll = live_bal
+                self.state["bankroll"] = live_bal
 
         logger.info("=" * 60)
         logger.info(f"  Crypto Trader — {'DRY RUN' if dry_run else 'LIVE'}")
@@ -337,16 +335,15 @@ class CryptoTrader:
         live = get_live_balance(self.client)
         if live is None:
             return  # API error — keep internal value
-        capped   = min(live, WALLET_ALLOCATION)
         internal = self.bankroll
-        drift    = abs(capped - internal)
+        drift    = abs(live - internal)
         if drift > 1.0:
-            logger.info(f"  💰 Balance sync: on-chain ${live:.2f}  allocated ${capped:.2f}  "
+            logger.info(f"  💰 Balance sync: on-chain ${live:.2f}  "
                         f"internal ${internal:.2f}  drift ${drift:.2f} — correcting")
         else:
-            logger.info(f"  💰 Balance: ${capped:.2f} ✓  (wallet ${live:.2f})")
-        self.bankroll = capped
-        self.state["bankroll"] = capped
+            logger.info(f"  💰 Balance: ${live:.2f} ✓")
+        self.bankroll = live
+        self.state["bankroll"] = live
 
     def _cycle(self, cycle_num):
         now    = datetime.now(timezone.utc)
