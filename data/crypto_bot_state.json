@@ -1,20 +1,8 @@
 {
-  "bankroll": 243.81,
-  "positions": {
-    "xrp-up-or-down-march-8-11pm-et": {
-      "asset": "XRP",
-      "tf": "1h",
-      "series": "xrp-up-or-down-hourly",
-      "up_token_id": "102833189702298383836226905884421797821538844858356058855818670913445261604860",
-      "entry_prob": 0.955,
-      "shares": 20.0,
-      "cost": 19.099999999999998,
-      "entry_time": "2026-03-09T03:13:27.249018+00:00",
-      "end_str": "2026-03-09T04:00:00Z"
-    }
-  },
-  "pnl": 41.774630990000006,
+  "bankroll": 244.79,
+  "positions": {},
+  "pnl": 42.46463099,
   "wagered": 1044.1900000000003,
-  "wins": 93,
+  "wins": 94,
   "losses": 9
 }
