@@ -91,6 +91,8 @@ All planning documents, strategy write-ups, and architectural plans live in the 
 | Trader | `polymarket_trader.py` | Live sports trading bot |
 | Whale Tracker | `whale-tracker/whale_tracker.py` | Whale & insider trade alerts (60s cycles) |
 | Copy Trade | `copy-trade-monitor/copy_trade_monitor.py` | Leaderboard copy-trade tracker |
+| Crypto Monitor | `crypto_monitor.py` | Passive crypto data collection (60s cycles) — Phase 1 |
+| Crypto Trader | `crypto_trader.py` | Live crypto trading bot — 15m & 1h Up/Down markets |
 
 ### Running Bots
 
@@ -103,7 +105,43 @@ nohup python3 polymarket_trader.py --no-confirm > trader_output.log 2>&1 &
 
 # Whale Tracker
 cd whale-tracker && nohup python3 whale_tracker.py > ../whale.log 2>&1 &
+
+# Crypto Monitor (Phase 1 — passive data collection, no trades)
+nohup python3 crypto_monitor.py > crypto_monitor.log 2>&1 &
+
+# Crypto Trader (Phase 2 — live trading, $150 allocation)
+nohup python3 crypto_trader.py --no-confirm > crypto_trader.log 2>&1 &
 ```
+
+## Crypto Monitor (Phase 1)
+
+Passive data collector for BTC/ETH/SOL/XRP markets. No trading — build dataset for backtesting.
+
+### Markets Tracked
+| Timeframe | Assets | Count at any time |
+|-----------|--------|-------------------|
+| 5 min | BTC, ETH, SOL, XRP | ~35 per asset |
+| 15 min | BTC, ETH, SOL, XRP | ~11 per asset |
+| 1 hour | BTC, ETH, SOL, XRP | ~2 per asset |
+| 4 hour | BTC, ETH, SOL, XRP | ~1 per asset |
+| Daily Above | BTC, ETH | 11 thresholds each |
+
+### Output Files
+| File | Contents |
+|------|----------|
+| `data/crypto_snapshots.csv` | Probability time series (~238 rows/cycle) |
+| `data/crypto_resolutions.csv` | Final outcomes (Up/Down/YES/NO per market) |
+| `data/crypto_state.json` | Pending resolution tracking (restart-safe) |
+
+### CSV Schema
+**crypto_snapshots.csv**: `timestamp, event_slug, series_slug, asset, timeframe, market_type, threshold_price, outcome, implied_prob, liquidity, volume_24h, minutes_to_expiry, price_approx`
+
+**crypto_resolutions.csv**: `resolved_timestamp, event_slug, series_slug, asset, timeframe, market_type, threshold_price, winning_outcome`
+
+### API Discovery
+- Up/Down: broad query `GET /events?closed=false&end_date_min=now&end_date_max=now+5h`, filter by `seriesSlug`
+- Daily Above: slug-based `GET /events?slug=bitcoin-above-on-march-6`
+- Resolution: batch query `GET /events?closed=true&end_date_min=now-20m&end_date_max=now`
 
 ## Trader Bot Parameters (as of March 4, 2026)
 
@@ -134,7 +172,49 @@ cd whale-tracker && nohup python3 whale_tracker.py > ../whale.log 2>&1 &
 - Worst: NCAA_CBB (-$53.52, 28-2), ATP (-$14.55, 23-3)
 - Full analysis: `planning/trading-bot-performance-analysis.md`
 
+## Crypto Trader (Phase 2)
+
+Live trading bot for BTC/ETH/SOL/XRP 15m and 1h Up/Down markets. Built on backtest findings (98% win rate at ≥90% entry with ≥5 min remaining).
+
+### Parameters
+| Parameter | Value |
+|-----------|-------|
+| Entry threshold | 90% |
+| 15m time window | 3–13 min remaining |
+| 1h time window | 10–50 min remaining |
+| Bet size | 5% of bankroll ($15 on $300 pot) |
+| Min bet | $10 |
+| Max bet | $50 |
+| Max concurrent | 4 positions |
+| Stop-loss | 40% |
+| Target exit | 99% |
+| Wallet allocation | $150 (hard cap, prevents conflict with sports bot) |
+| Balance sync | Every 10 cycles (~5 min) |
+| API exit check | Every 5 cycles (~2.5 min) |
+
+### State File
+`data/crypto_bot_state.json` — separate from sports bot's `data/state.json`
+
+### Auto-resolution Handling
+- `_sell()` returns `"RESOLVED"` (string) when CLOB says "does not exist" — market already redeemed on-chain
+- `_check_exits()` handles `"RESOLVED"` distinctly: no revenue added (USDC already credited by Polymarket), PnL calculated from shares vs cost
+- Retry at `price - 0.01` when FOK sell fails on a win (stuck-at-99c pattern)
+- `_check_exits_from_api()` queries `data-api.polymarket.com/positions` every 5 cycles for on-chain sweep
+
+### Wallet Isolation
+- `WALLET_ALLOCATION = 150.0` — this bot never uses more than $150 of the shared wallet
+- `_sync_balance()` caps reported balance at `min(live_usdc, WALLET_ALLOCATION)` on every sync
+- Sports bot operates on whatever remains above this line — no conflict
+
 ## Changelog
+
+### 2026-03-06: Crypto Trader Launch (Phase 2)
+- Built `crypto_trader.py` — live trading for 15m/1h Up/Down markets
+- Wallet isolation via `WALLET_ALLOCATION = $150` constant
+- Auto-resolution: `_sell()` returns `"RESOLVED"` string for on-chain redeemed positions
+- Stuck-at-99c retry: price−0.01 retry on failed win exits
+- On-chain sweep: `_check_exits_from_api()` mirrors sports bot pattern
+- State persisted to `data/crypto_bot_state.json` (separate from sports bot)
 
 ### 2026-03-04: Parameter Optimization v7
 - Entry thresholds raised: ATP 93%→94%, NCAA_CBB 92%→93%, CWBB 85%→90%, NBA 88%→91%, WTT 83%→88%

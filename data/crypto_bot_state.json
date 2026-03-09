@@ -1,0 +1,42 @@
+{
+  "bankroll": 225.0,
+  "positions": {
+    "xrp-up-or-down-march-8-11pm-et": {
+      "asset": "XRP",
+      "tf": "1h",
+      "series": "xrp-up-or-down-hourly",
+      "up_token_id": "102833189702298383836226905884421797821538844858356058855818670913445261604860",
+      "entry_prob": 0.955,
+      "shares": 20.0,
+      "cost": 19.099999999999998,
+      "entry_time": "2026-03-09T03:13:27.249018+00:00",
+      "end_str": "2026-03-09T04:00:00Z"
+    },
+    "ethereum-up-or-down-march-8-11pm-et": {
+      "asset": "ETH",
+      "tf": "1h",
+      "series": "eth-up-or-down-hourly",
+      "up_token_id": "88923025267387629714152888496362581547523373338923650667244134448362709412400",
+      "entry_prob": 0.945,
+      "shares": 19.0,
+      "cost": 17.955,
+      "entry_time": "2026-03-09T03:13:27.249018+00:00",
+      "end_str": "2026-03-09T04:00:00Z"
+    },
+    "bitcoin-up-or-down-march-8-11pm-et": {
+      "asset": "BTC",
+      "tf": "1h",
+      "series": "btc-up-or-down-hourly",
+      "up_token_id": "86304100921391110194052935517158682752104661039598948157459019763335913315395",
+      "entry_prob": 0.925,
+      "shares": 18.0,
+      "cost": 16.650000000000002,
+      "entry_time": "2026-03-09T03:13:27.249018+00:00",
+      "end_str": "2026-03-09T04:00:00Z"
+    }
+  },
+  "pnl": 39.74963099,
+  "wagered": 1044.1900000000003,
+  "wins": 91,
+  "losses": 9
+}
