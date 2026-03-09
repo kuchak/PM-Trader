@@ -51,7 +51,7 @@ STOP_LOSS    = 0.40
 TARGET_EXIT  = 0.99
 
 # Position sizing
-BET_PCT      = 0.07    # 7% of bankroll per trade
+BET_PCT      = 0.10    # 10% of bankroll per trade
 BET_MIN      = 10.0    # minimum bet $10
 BET_CAP      = 50.0    # maximum bet $50
 MAX_CONCURRENT = 4     # max open positions at once
