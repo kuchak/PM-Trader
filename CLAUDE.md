@@ -143,7 +143,7 @@ Passive data collector for BTC/ETH/SOL/XRP markets. No trading — build dataset
 - Daily Above: slug-based `GET /events?slug=bitcoin-above-on-march-6`
 - Resolution: batch query `GET /events?closed=true&end_date_min=now-20m&end_date_max=now`
 
-## Trader Bot Parameters (as of March 4, 2026)
+## Trader Bot Parameters (as of March 10, 2026)
 
 ### Risk Controls
 | Parameter | Value |
@@ -151,42 +151,49 @@ Passive data collector for BTC/ETH/SOL/XRP markets. No trading — build dataset
 | MIN_LIQUIDITY | $50,000 |
 | MAX_TOTAL_EXPOSURE | 100% |
 | MAX_PER_MARKET | 20% |
-| DEFAULT_BET | 15% |
 | Stop-loss | Sell when prob <= 40% |
 
-### Entry Thresholds
-| Sport | Threshold | Min Elapsed | Hist Winrate |
-|-------|-----------|-------------|-------------|
-| ATP | 94% | 45 min | 95.8% |
-| WTA | 92% | 30 min | 94.1% |
-| NCAA_CBB | 93% | 60 min | 96.4% |
-| CWBB | 90% | 45 min | 94.7% |
-| NBA | 91% | 0 min | 100% |
-| NHL | 93% | 30 min | 90% |
-| WTT_Women | 88% | 0 min | 100% |
-| WTT_Men | 88% | 0 min | 100% |
+### Entry Thresholds & Bet Sizing (per-sport, wired into cfg['max_per_bet_pct'])
+| Sport | Threshold | Min Elapsed | Bet % | All-time WR | Rationale |
+|-------|-----------|-------------|-------|-------------|-----------|
+| WTA | 92% | 30 min | **28%** | 100% (23-0) | Perfect record |
+| NBA | 91% | 0 min | **27%** | 97.8% (44-1) | Near-perfect |
+| NCAA_CBB | 93% | 60 min | **22%** | 96.2% (51-2) | 2 pre-v7 blowups |
+| ATP | 94% | 45 min | **18%** | 89.7% (26-3) | 3 historical losses |
+| WTT_Women | 88% | 0 min | **20%** | 100% | Limited data |
+| WTT_Men | 88% | 0 min | **20%** | 100% | Limited data |
+| CWBB | 90% | 45 min | **15%** | unproven | Thin markets |
+| NHL | 93% | 30 min | **15%** | unproven | 0 qualifying trades |
 
-### Performance (102 trades, Feb 26 - Mar 4, 2026)
-- 96W/6L (94.1%), net PnL +$10.09
-- Best: WTA (+$34.81, 19-0), NBA (+$31.43, 24-1)
-- Worst: NCAA_CBB (-$53.52, 28-2), ATP (-$14.55, 23-3)
+### Performance (161W/7L all-time, Feb 26 - Mar 10, 2026)
+- Post-v7 (Mar 7-10): 50W/0L, bankroll $305 → $474
+- Best: WTA (100% all-time), NBA (97.8%)
 - Full analysis: `planning/trading-bot-performance-analysis.md`
 
 ## Crypto Trader (Phase 2)
 
-Live trading bot for BTC/ETH/SOL/XRP 15m and 1h Up/Down markets. Built on backtest findings (98% win rate at ≥90% entry with ≥5 min remaining).
+Live trading bot for BTC/ETH/XRP 15m and 1h Up/Down markets. SOL 15m excluded (net loser, 71% WR). Entries at prob ≥99% skipped (rounding artifact).
 
 ### Parameters
 | Parameter | Value |
 |-----------|-------|
-| Entry threshold | 90% |
+| Entry threshold | 90% (skip if ≥99%) |
 | 15m time window | 3–13 min remaining |
 | 1h time window | 10–50 min remaining |
-| Bet size | 5% of bankroll ($15 on $300 pot) |
 | Min bet | $10 |
-| Max bet | $50 |
-| Max concurrent | 4 positions |
+| Max concurrent | 6 positions |
 | Stop-loss | 40% |
+
+### Bet Sizing (per-market % of available bankroll — Tier 1 gets larger allocation)
+| Market | Bet % | WR | ROI/bet | Tier |
+|--------|-------|----|---------|------|
+| BTC 1h | **25%** | 100% (12-0) | 7.8% | 1 |
+| BTC 15m | **23%** | 100% (10-0) | 7.4% | 1 |
+| XRP 1h | **21%** | 100% (10-0) | 6.0% | 1 |
+| ETH 15m | **8%** | 86% (6-1) | 4.0% | 2 |
+| XRP 15m | **8%** | 88% (7-1) | 2.5% | 2 |
+| ETH 1h | **8%** | 90% (9-1) | 2.4% | 2 |
+| SOL 15m | dropped | 71% (5-2) | -9.2% | — |
 | Target exit | 99% |
 | Wallet allocation | $150 (hard cap, prevents conflict with sports bot) |
 | Balance sync | Every 10 cycles (~5 min) |
@@ -207,6 +214,16 @@ Live trading bot for BTC/ETH/SOL/XRP 15m and 1h Up/Down markets. Built on backte
 - Sports bot operates on whatever remains above this line — no conflict
 
 ## Changelog
+
+### 2026-03-10: Per-Market Bet Sizing (v8)
+- **Sports**: per-sport `max_per_bet_pct` now wired into bet calculation (was ignored, used DEFAULT_BET_PCT=20% for all)
+  - WTA 28%, NBA 27%, NCAA_CBB 22%, ATP 18%, CWBB/NHL 15%, WTT 20%
+- **Crypto**: replaced global BET_PCT=10%/BET_CAP=$50 with `MARKET_BET_PCT` dict (per-market %)
+  - Tier 1: BTC 1h=25%, BTC 15m=23%, XRP 1h=21%
+  - Tier 2: ETH/XRP 15m+1h=8% each
+- **Crypto**: dropped SOL 15m (71% WR, -9.2% ROI, only net loser)
+- **Crypto**: skip entries at prob ≥99% (BTC 1h rounding artifact — all 5 losses were this case)
+- **Crypto**: MAX_CONCURRENT raised 4→6
 
 ### 2026-03-06: Crypto Trader Launch (Phase 2)
 - Built `crypto_trader.py` — live trading for 15m/1h Up/Down markets

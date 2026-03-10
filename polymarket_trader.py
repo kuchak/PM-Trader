@@ -46,7 +46,7 @@ STRATEGIES = {
     'ATP': {
         'slug_prefixes': {'atp-'},
         'entry_threshold': 0.94,
-        'max_per_bet_pct': DEFAULT_BET_PCT,
+        'max_per_bet_pct': 0.18,   # 89.7% all-time WR, 3 historical losses
         'min_elapsed_min': 45,
         'est_remaining_min': 60,
         'hist_winrate': 0.958,
@@ -55,7 +55,7 @@ STRATEGIES = {
     'WTA': {
         'slug_prefixes': {'wta-'},
         'entry_threshold': 0.92,
-        'max_per_bet_pct': DEFAULT_BET_PCT,
+        'max_per_bet_pct': 0.28,   # 100% all-time WR, best record
         'min_elapsed_min': 30,
         'est_remaining_min': 60,
         'hist_winrate': 0.941,
@@ -64,7 +64,7 @@ STRATEGIES = {
     'NCAA_CBB': {
         'slug_prefixes': {'cbb-'},
         'entry_threshold': 0.93,
-        'max_per_bet_pct': DEFAULT_BET_PCT,
+        'max_per_bet_pct': 0.22,   # 96.2% all-time WR, 2 pre-v7 blowups
         'min_elapsed_min': 60,
         'est_remaining_min': 60,
         'hist_winrate': 0.964,
@@ -74,7 +74,7 @@ STRATEGIES = {
     'CWBB': {
         'slug_prefixes': {'cwbb-'},
         'entry_threshold': 0.90,
-        'max_per_bet_pct': DEFAULT_BET_PCT,
+        'max_per_bet_pct': 0.15,   # unproven, thin markets
         'min_elapsed_min': 45,
         'est_remaining_min': 60,
         'hist_winrate': 0.947,
@@ -84,7 +84,7 @@ STRATEGIES = {
     'NBA': {
         'slug_prefixes': {'nba-'},
         'entry_threshold': 0.91,
-        'max_per_bet_pct': DEFAULT_BET_PCT,
+        'max_per_bet_pct': 0.27,   # 97.8% all-time WR, near-perfect
         'min_elapsed_min': 0,
         'est_remaining_min': 60,
         'hist_winrate': 1.00,
@@ -93,7 +93,7 @@ STRATEGIES = {
     'NHL': {
         'slug_prefixes': {'nhl-'},
         'entry_threshold': 0.93,
-        'max_per_bet_pct': DEFAULT_BET_PCT,
+        'max_per_bet_pct': 0.15,   # unproven, 0 qualifying trades
         'min_elapsed_min': 30,
         'est_remaining_min': 30,
         'hist_winrate': 0.90,
@@ -102,7 +102,7 @@ STRATEGIES = {
     'WTT_Women': {
         'slug_prefixes': {'wttwmn-'},
         'entry_threshold': 0.88,
-        'max_per_bet_pct': DEFAULT_BET_PCT,
+        'max_per_bet_pct': 0.20,
         'min_elapsed_min': 0,
         'est_remaining_min': 30,
         'hist_winrate': 1.00,
@@ -111,7 +111,7 @@ STRATEGIES = {
     'WTT_Men': {
         'slug_prefixes': {'wttmen-'},
         'entry_threshold': 0.88,
-        'max_per_bet_pct': DEFAULT_BET_PCT,
+        'max_per_bet_pct': 0.20,
         'min_elapsed_min': 0,
         'est_remaining_min': 30,
         'hist_winrate': 1.00,
@@ -704,7 +704,7 @@ class TradingBot:
 
             cfg = STRATEGIES[c['strategy']]
             bet_size = min(
-                max(total_capital * DEFAULT_BET_PCT, 20),
+                max(total_capital * cfg['max_per_bet_pct'], 20),
                 market_room,
                 max_deploy,
             )

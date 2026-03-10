@@ -2,11 +2,14 @@
 """
 Crypto Trader — 15-min and 1-hour Up/Down Markets
 
-Bets on BTC/ETH/SOL/XRP directional markets when probability >= 90%
+Bets on BTC/ETH/XRP directional markets when probability >= 90%
 with sufficient time remaining. Targets 15m and 1h timeframes only.
+SOL 15m excluded (net loser). Entries at prob >= 99% skipped (rounding artifact).
 
-Bet sizing: 5% of bankroll per trade, min $10, cap $50.
-With $300 starting bankroll: $15/bet, max 4 concurrent positions.
+Bet sizing: per-market % of available bankroll, min $10.
+  Tier 1 (100% WR): BTC 1h=25%, BTC 15m=23%, XRP 1h=21%
+  Tier 2 (85-90% WR): ETH/XRP 15m+1h=8% each
+Max 6 concurrent positions.
 
 Entry:  prob >= 90%, mins_remaining in [3, 13] for 15m / [10, 50] for 1h
 Exit:   target 99% (profit lock), stop-loss 40%, or hold to resolution
@@ -50,12 +53,21 @@ MAX_MINS = {"15m": 13, "1h": 50}   # don't enter with more time than this (unsta
 STOP_LOSS    = 0.40
 TARGET_EXIT  = 0.99
 
-# Position sizing
-BET_PCT      = 0.10    # 10% of bankroll per trade
+# Position sizing — per-market percentages of available bankroll
+# Tier 1 (100% WR, highest ROI): larger allocation
+# Tier 2 (85-90% WR): standard allocation
+# SOL 15m dropped (71% WR, net loser)
+MARKET_BET_PCT = {
+    ('BTC', '1h'):  0.25,   # 100% WR, 7.8% ROI — highest
+    ('BTC', '15m'): 0.23,   # 100% WR, 7.4% ROI
+    ('XRP', '1h'):  0.21,   # 100% WR, 6.0% ROI
+    ('ETH', '15m'): 0.08,   # 86% WR, 4.0% ROI
+    ('XRP', '15m'): 0.08,   # 88% WR, 2.5% ROI
+    ('ETH', '1h'):  0.08,   # 90% WR, 2.4% ROI
+}
 BET_MIN      = 10.0    # minimum bet $10
-BET_CAP      = 50.0    # maximum bet $50
-MAX_CONCURRENT = 4     # max open positions at once
-MAX_PER_MARKET_PCT = 0.20  # never more than 20% of bankroll in one position
+MAX_CONCURRENT = 6     # max open positions at once
+MAX_PER_MARKET_PCT = 0.30  # never more than 30% of bankroll in one position
 
 # Balance sync: re-read live USDC balance every N cycles to stay accurate
 BALANCE_SYNC_EVERY = 10   # every 10 cycles = every ~5 minutes
@@ -299,14 +311,15 @@ class CryptoTrader:
         logger.info("=" * 60)
         logger.info(f"  Crypto Trader — {'DRY RUN' if dry_run else 'LIVE'}")
         logger.info(f"  Bankroll:   ${self.bankroll:.2f}")
-        logger.info(f"  Bet size:   {BET_PCT*100:.0f}% = ${self._bet_size():.2f}/trade")
+        logger.info(f"  Bet sizes:  BTC1h={MARKET_BET_PCT[('BTC','1h')]:.0%} BTC15m={MARKET_BET_PCT[('BTC','15m')]:.0%} XRP1h={MARKET_BET_PCT[('XRP','1h')]:.0%} others=8%")
         logger.info(f"  Max concurrent: {MAX_CONCURRENT}  |  Stop: {STOP_LOSS:.0%}  Target: {TARGET_EXIT:.0%}")
         logger.info(f"  Entry:      >= {ENTRY_THRESHOLD:.0%}  |  15m: {MIN_MINS['15m']}-{MAX_MINS['15m']}min  "
                     f"1h: {MIN_MINS['1h']}-{MAX_MINS['1h']}min")
         logger.info("=" * 60)
 
-    def _bet_size(self):
-        return max(BET_MIN, min(BET_CAP, self.bankroll * BET_PCT))
+    def _bet_size(self, asset, tf):
+        pct = MARKET_BET_PCT.get((asset, tf), 0)
+        return max(BET_MIN, self.bankroll * pct)
 
     @property
     def total_exposure(self):
@@ -614,6 +627,11 @@ class CryptoTrader:
             tf   = ev["tf"]
             prob = ev["up_prob"]
             mins = ev["mins_to_exp"]
+            asset = ev["asset"]
+
+            # Skip markets not in MARKET_BET_PCT (includes SOL 15m)
+            if (asset, tf) not in MARKET_BET_PCT:
+                continue
 
             # Already in a position for this event
             if slug in self.positions:
@@ -627,12 +645,16 @@ class CryptoTrader:
             if prob < ENTRY_THRESHOLD:
                 continue
 
+            # Skip prob >= 99% — rounding artifact causes guaranteed tiny loss at exit
+            if prob >= 0.99:
+                continue
+
             # Time window check
             if mins < MIN_MINS.get(tf, 3) or mins > MAX_MINS.get(tf, 50):
                 continue
 
             # Bankroll checks
-            bet = self._bet_size()
+            bet = self._bet_size(asset, tf)
             if self.bankroll < bet:
                 logger.warning(f"  ⛔ Bankroll ${self.bankroll:.2f} < bet ${bet:.2f}")
                 break
@@ -790,7 +812,7 @@ def main():
     print(f"  Crypto Trader — {mode}")
     print(f"  Targets: 15m + 1h Up/Down | BTC ETH SOL XRP")
     print(f"  Entry: >= {ENTRY_THRESHOLD:.0%} | Stop: {STOP_LOSS:.0%} | Target: {TARGET_EXIT:.0%}")
-    print(f"  Bet sizing: {BET_PCT*100:.0f}% of bankroll, ${BET_MIN:.0f}-${BET_CAP:.0f}/trade")
+    print(f"  Bet sizing: per-market % | BTC1h=25% BTC15m=23% XRP1h=21% others=8% | min ${BET_MIN:.0f}")
     print(f"  State: {STATE_FILE}")
     print(f"{'='*60}\n")
 
