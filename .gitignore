@@ -2,6 +2,7 @@
 data/market_snapshots.csv
 data/market_snapshots.csv.gz
 data/*.bak
+data/crypto_snapshots.csv
 
 # Logs
 monitor.log

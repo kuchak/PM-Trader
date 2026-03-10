@@ -22,7 +22,11 @@ from dotenv import load_dotenv
 load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env"))
 
 INITIAL_BANKROLL = 360.0
-STATE_FILE = os.path.expanduser("~/polymarket/bot_state.json")
+# State file lives inside the repo so the auto-push crontab captures it every 5 min.
+# Migration: if the new path doesn't exist but the old path does, copy automatically on startup.
+_REPO_DIR   = os.path.dirname(os.path.abspath(__file__))
+STATE_FILE  = os.path.join(_REPO_DIR, "data", "sports_bot_state.json")
+_OLD_STATE  = os.path.expanduser("~/polymarket/bot_state.json")
 POLL_INTERVAL = 45
 MIN_BET = 1.0
 MIN_LIQUIDITY = 50000
@@ -429,6 +433,12 @@ class TradingBot:
         return None
 
     def _load_state(self):
+        # One-time migration: copy old state file into repo data/ directory
+        if not os.path.exists(STATE_FILE) and os.path.exists(_OLD_STATE):
+            import shutil
+            os.makedirs(os.path.dirname(STATE_FILE), exist_ok=True)
+            shutil.copy(_OLD_STATE, STATE_FILE)
+            logger.info(f"  📦 Migrated state: {_OLD_STATE} → {STATE_FILE}")
         if os.path.exists(STATE_FILE):
             try:
                 with open(STATE_FILE, 'r') as f:
