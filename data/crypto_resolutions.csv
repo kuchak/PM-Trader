@@ -7525,3 +7525,15 @@ resolved_timestamp,event_slug,series_slug,asset,timeframe,market_type,threshold_
 2026-03-10T19:57:06Z,eth-updown-5m-1773172200,eth-up-or-down-5m,ETH,5m,up_down,,Down
 2026-03-10T19:57:06Z,sol-updown-5m-1773172200,sol-up-or-down-5m,SOL,5m,up_down,,Down
 2026-03-10T19:57:06Z,xrp-updown-5m-1773172200,xrp-up-or-down-5m,XRP,5m,up_down,,Down
+2026-03-10T20:02:28Z,sol-updown-4h-1773158400,sol-up-or-down-4h,SOL,4h,up_down,,Down
+2026-03-10T20:02:28Z,btc-updown-4h-1773158400,btc-up-or-down-4h,BTC,4h,up_down,,Down
+2026-03-10T20:02:28Z,eth-updown-4h-1773158400,eth-up-or-down-4h,ETH,4h,up_down,,Down
+2026-03-10T20:02:28Z,sol-updown-15m-1773171900,sol-up-or-down-15m,SOL,15m,up_down,,Down
+2026-03-10T20:02:28Z,xrp-updown-15m-1773171900,xrp-up-or-down-15m,XRP,15m,up_down,,Down
+2026-03-10T20:02:28Z,btc-updown-5m-1773172500,btc-up-or-down-5m,BTC,5m,up_down,,Up
+2026-03-10T20:02:28Z,xrp-updown-5m-1773172500,xrp-up-or-down-5m,XRP,5m,up_down,,Up
+2026-03-10T20:02:28Z,btc-updown-15m-1773171900,btc-up-or-down-15m,BTC,15m,up_down,,Up
+2026-03-10T20:02:28Z,eth-updown-5m-1773172500,eth-up-or-down-5m,ETH,5m,up_down,,Up
+2026-03-10T20:02:28Z,sol-updown-5m-1773172500,sol-up-or-down-5m,SOL,5m,up_down,,Up
+2026-03-10T20:02:28Z,eth-updown-15m-1773171900,eth-up-or-down-15m,ETH,15m,up_down,,Down
+2026-03-10T20:02:28Z,xrp-updown-4h-1773158400,xrp-up-or-down-4h,XRP,4h,up_down,,Down
