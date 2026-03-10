@@ -58,9 +58,9 @@ TARGET_EXIT  = 0.99
 # Tier 2 (85-90% WR): standard allocation
 # SOL 15m dropped (71% WR, net loser)
 MARKET_BET_PCT = {
-    ('BTC', '1h'):  0.25,   # 100% WR, 7.8% ROI — highest
-    ('BTC', '15m'): 0.23,   # 100% WR, 7.4% ROI
-    ('XRP', '1h'):  0.21,   # 100% WR, 6.0% ROI
+    ('BTC', '1h'):  0.30,   # 100% WR, 7.8% ROI — best risk-adjusted, above WTA/NBA
+    ('BTC', '15m'): 0.29,   # 100% WR, 7.4% ROI
+    ('XRP', '1h'):  0.28,   # 100% WR, 6.0% ROI — matches WTA (same WR, higher ROI)
     ('ETH', '15m'): 0.08,   # 86% WR, 4.0% ROI
     ('XRP', '15m'): 0.08,   # 88% WR, 2.5% ROI
     ('ETH', '1h'):  0.08,   # 90% WR, 2.4% ROI

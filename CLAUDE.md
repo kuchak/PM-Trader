@@ -187,9 +187,9 @@ Live trading bot for BTC/ETH/XRP 15m and 1h Up/Down markets. SOL 15m excluded (n
 ### Bet Sizing (per-market % of available bankroll — Tier 1 gets larger allocation)
 | Market | Bet % | WR | ROI/bet | Tier |
 |--------|-------|----|---------|------|
-| BTC 1h | **25%** | 100% (12-0) | 7.8% | 1 |
-| BTC 15m | **23%** | 100% (10-0) | 7.4% | 1 |
-| XRP 1h | **21%** | 100% (10-0) | 6.0% | 1 |
+| BTC 1h | **30%** | 100% (12-0) | 7.8% | 1 |
+| BTC 15m | **29%** | 100% (10-0) | 7.4% | 1 |
+| XRP 1h | **28%** | 100% (10-0) | 6.0% | 1 |
 | ETH 15m | **8%** | 86% (6-1) | 4.0% | 2 |
 | XRP 15m | **8%** | 88% (7-1) | 2.5% | 2 |
 | ETH 1h | **8%** | 90% (9-1) | 2.4% | 2 |
@@ -219,7 +219,7 @@ Live trading bot for BTC/ETH/XRP 15m and 1h Up/Down markets. SOL 15m excluded (n
 - **Sports**: per-sport `max_per_bet_pct` now wired into bet calculation (was ignored, used DEFAULT_BET_PCT=20% for all)
   - WTA 28%, NBA 27%, NCAA_CBB 22%, ATP 18%, CWBB/NHL 15%, WTT 20%
 - **Crypto**: replaced global BET_PCT=10%/BET_CAP=$50 with `MARKET_BET_PCT` dict (per-market %)
-  - Tier 1: BTC 1h=25%, BTC 15m=23%, XRP 1h=21%
+  - Tier 1: BTC 1h=30%, BTC 15m=29%, XRP 1h=28%
   - Tier 2: ETH/XRP 15m+1h=8% each
 - **Crypto**: dropped SOL 15m (71% WR, -9.2% ROI, only net loser)
 - **Crypto**: skip entries at prob ≥99% (BTC 1h rounding artifact — all 5 losses were this case)
