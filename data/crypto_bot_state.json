@@ -1,5 +1,5 @@
 {
-  "bankroll": 240.84,
+  "bankroll": 224.86499999999995,
   "positions": {
     "ethereum-up-or-down-march-10-4am-et": {
       "asset": "ETH",
@@ -13,8 +13,8 @@
       "end_str": "2026-03-10T09:00:00Z"
     }
   },
-  "pnl": 75.67296878,
-  "wagered": 2315.4815000000003,
+  "pnl": 75.53796878,
+  "wagered": 2360.1665000000003,
   "wins": 180,
-  "losses": 18
+  "losses": 21
 }
