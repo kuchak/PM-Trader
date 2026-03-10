@@ -1,20 +1,8 @@
 {
   "bankroll": 225.0,
-  "positions": {
-    "ethereum-up-or-down-march-10-4am-et": {
-      "asset": "ETH",
-      "tf": "1h",
-      "series": "eth-up-or-down-hourly",
-      "up_token_id": "63193856844668929610834366680040191412088340291359168354402056228727932530563",
-      "entry_prob": 0.935,
-      "shares": 16.0,
-      "cost": 14.96,
-      "entry_time": "2026-03-10T08:33:27.918431+00:00",
-      "end_str": "2026-03-10T09:00:00Z"
-    }
-  },
-  "pnl": 75.53796878,
+  "positions": {},
+  "pnl": 76.57796877999999,
   "wagered": 2360.1665000000003,
-  "wins": 180,
+  "wins": 181,
   "losses": 21
 }
