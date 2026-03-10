@@ -1,5 +1,5 @@
 {
-  "bankroll": 225.0,
+  "bankroll": 210.04,
   "positions": {
     "xrp-up-or-down-march-10-4am-et": {
       "asset": "XRP",
@@ -22,10 +22,21 @@
       "cost": 14.64,
       "entry_time": "2026-03-10T08:23:25.540815+00:00",
       "end_str": "2026-03-10T09:00:00Z"
+    },
+    "ethereum-up-or-down-march-10-4am-et": {
+      "asset": "ETH",
+      "tf": "1h",
+      "series": "eth-up-or-down-hourly",
+      "up_token_id": "63193856844668929610834366680040191412088340291359168354402056228727932530563",
+      "entry_prob": 0.935,
+      "shares": 16.0,
+      "cost": 14.96,
+      "entry_time": "2026-03-10T08:33:27.918431+00:00",
+      "end_str": "2026-03-10T09:00:00Z"
     }
   },
   "pnl": 72.64796878,
-  "wagered": 2285.4015000000004,
+  "wagered": 2300.3615000000004,
   "wins": 177,
   "losses": 18
 }
