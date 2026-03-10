@@ -6980,3 +6980,7 @@ resolved_timestamp,event_slug,series_slug,asset,timeframe,market_type,threshold_
 2026-03-10T11:51:55Z,sol-updown-5m-1773143100,sol-up-or-down-5m,SOL,5m,up_down,,Up
 2026-03-10T11:51:55Z,btc-updown-5m-1773143100,btc-up-or-down-5m,BTC,5m,up_down,,Up
 2026-03-10T11:51:55Z,xrp-updown-5m-1773143100,xrp-up-or-down-5m,XRP,5m,up_down,,Up
+2026-03-10T11:57:15Z,xrp-updown-5m-1773143400,xrp-up-or-down-5m,XRP,5m,up_down,,Up
+2026-03-10T11:57:15Z,sol-updown-5m-1773143400,sol-up-or-down-5m,SOL,5m,up_down,,Down
+2026-03-10T11:57:15Z,btc-updown-5m-1773143400,btc-up-or-down-5m,BTC,5m,up_down,,Down
+2026-03-10T11:57:15Z,eth-updown-5m-1773143400,eth-up-or-down-5m,ETH,5m,up_down,,Down
