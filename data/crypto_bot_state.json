@@ -1,8 +1,24 @@
 {
-  "bankroll": 379.893303,
+  "bankroll": 340.294225,
   "positions": {},
-  "pnl": 95.21054746736797,
-  "wagered": 3320.421499999999,
-  "wins": 245,
-  "losses": 31
+  "pnl": 141.4790985853159,
+  "wagered": 4236.091499999999,
+  "wins": 266,
+  "losses": 31,
+  "closed_trades": [
+    {
+      "slug": "ethereum-up-or-down-march-11-4am-et",
+      "asset": "ETH",
+      "tf": "1h",
+      "entry_price": 0.935,
+      "entry_ts": "2026-03-11T08:37:40.409466+00:00",
+      "exit_price": 0.99,
+      "exit_ts": "2026-03-11T08:53:11.350743+00:00",
+      "shares": 57.0,
+      "cost": 53.295,
+      "pnl": 3.134999999999998,
+      "won": true,
+      "exit_reason": "target"
+    }
+  ]
 }

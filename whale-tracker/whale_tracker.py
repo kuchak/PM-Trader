@@ -15,6 +15,17 @@ ROOKIE_MAX_AGE_DAYS = 30
 DATA_DIR = Path(__file__).parent / "data"
 TRADES_CSV = DATA_DIR / "whale_trades.csv"
 STATE_FILE = DATA_DIR / "whale_state.json"
+# Load .env from parent directory if env vars not set
+def _load_env():
+    env_path = Path(__file__).parent.parent / ".env"
+    if env_path.exists():
+        for line in env_path.read_text().splitlines():
+            line = line.strip()
+            if line and not line.startswith("#") and "=" in line:
+                k, v = line.split("=", 1)
+                os.environ.setdefault(k.strip(), v.strip())
+_load_env()
+
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID", "")
 DATA_API = "https://data-api.polymarket.com"
