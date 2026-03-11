@@ -1,20 +1,8 @@
 {
-  "bankroll": 225.0,
-  "positions": {
-    "bitcoin-up-or-down-march-10-7pm-et": {
-      "asset": "BTC",
-      "tf": "1h",
-      "series": "btc-up-or-down-hourly",
-      "up_token_id": "94351422011279584587709441036045759648428876957805321648017496024183834209137",
-      "entry_prob": 0.915,
-      "shares": 14.0,
-      "cost": 12.81,
-      "entry_time": "2026-03-10T23:40:11.245139+00:00",
-      "end_str": "2026-03-11T00:00:00Z"
-    }
-  },
-  "pnl": 68.39940859525095,
+  "bankroll": 226.8612891,
+  "positions": {},
+  "pnl": 69.67502127534094,
   "wagered": 3186.471499999999,
-  "wins": 234,
+  "wins": 236,
   "losses": 31
 }
