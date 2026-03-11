@@ -703,10 +703,11 @@ class CryptoTrader:
             return True
         try:
             from py_clob_client.clob_types import OrderArgs, OrderType
-            # Bid at 0.99 to cross any ask — CLOB fills at best available
-            order_args = OrderArgs(price=0.99, size=size, side="BUY", token_id=token_id)
+            # Bid at implied price — don't overpay vs Gamma signal
+            bid = round(price, 2)
+            order_args = OrderArgs(price=bid, size=size, side="BUY", token_id=token_id)
             signed     = self.client.create_order(order_args)
-            logger.info(f"  💲 Market buy {size:.0f} shr @ 0.99 (imp={price:.3f})")
+            logger.info(f"  💲 Market buy {size:.0f} shr @ {bid:.2f} (imp={price:.3f})")
             resp = self.client.post_order(signed, OrderType.FOK)
             logger.info(f"  📋 Response: {resp}")
             if resp and resp.get("success"):
