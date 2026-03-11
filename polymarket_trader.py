@@ -69,7 +69,7 @@ STRATEGIES = {
         'est_remaining_min': 60,
         'hist_winrate': 0.964,
         'scale_in': False,
-        'min_liquidity': 25000,
+        'min_liquidity': 30000,
     },
     'CWBB': {
         'slug_prefixes': {'cwbb-'},
@@ -79,7 +79,7 @@ STRATEGIES = {
         'est_remaining_min': 60,
         'hist_winrate': 0.947,
         'scale_in': False,
-        'min_liquidity': 25000,
+        'min_liquidity': 30000,
     },
     'NBA': {
         'slug_prefixes': {'nba-'},
@@ -343,6 +343,7 @@ def fetch_live_markets():
                 continue
 
             liquidity = float(mkt.get("liquidity", 0) or 0)
+            volume = float(mkt.get("volume", 0) or 0)
             best_ask = float(mkt.get("bestAsk", 0) or 0)
             best_bid = float(mkt.get("bestBid", 0) or 0)
 
@@ -357,6 +358,7 @@ def fetch_live_markets():
                     'implied_prob': prob,
                     'best_ask': best_ask if i == 0 else (1 - best_bid),
                     'liquidity': liquidity,
+                    'volume': volume,
                     'game_elapsed': elapsed_min,
                     'game_start': mkt.get("gameStartTime", ""),
                     'event_period': event.get("period", ""),
@@ -941,7 +943,7 @@ class TradingBot:
                         score = parts[1] if len(parts) >= 2 else score
                     logger.info(f"    {m['outcome'][:25]} @ {m['implied_prob']:.3f} | "
                         f"{m['game_elapsed']:.0f}m | {period} {score} | "
-                        f"Liq:${m['liquidity']:.0f} | {m['strategy']}")
+                        f"Liq:${m['liquidity']:.0f} Vol:${m['volume']:.0f} | {m['strategy']}")
 
         # Capture match-start probability for ATP/WTA on first observation
         for m in markets:
@@ -961,7 +963,7 @@ class TradingBot:
                 logger.info(f"  {len(new)} new opportunities:")
                 for c in new[:5]:
                     logger.info(f"    {c['outcome'][:25]} @ {c['implied_prob']:.3f} "
-                        f"EVH:{c['ev_hour']:.3f} Liq:${c['liquidity']:.0f} {c['strategy']}")
+                        f"EVH:{c['ev_hour']:.3f} Liq:${c['liquidity']:.0f} Vol:${c['volume']:.0f} {c['strategy']}")
             if scales:
                 logger.info(f"  {len(scales)} scale-in opportunities:")
                 for c in scales[:3]:
