@@ -703,8 +703,8 @@ class CryptoTrader:
             return True
         try:
             from py_clob_client.clob_types import OrderArgs, OrderType
-            # Bid at implied price + 1c buffer — fills at best ask up to this ceiling
-            bid = min(round(price + 0.01, 2), 0.97)
+            # Market order ceiling — fill at best ask, but never pay 99c+
+            bid = 0.98
             order_args = OrderArgs(price=bid, size=size, side="BUY", token_id=token_id)
             signed     = self.client.create_order(order_args)
             logger.info(f"  💲 Market buy {size:.0f} shr @ {bid:.2f} (imp={price:.3f})")
