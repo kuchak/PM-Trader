@@ -44,7 +44,7 @@ STOP_LOSS = {
     'NBA': 0.80,       # bimodal: winners hold >80%, losers collapse; saves ~$85 vs 40%
     'ATP': 0.80,       # no v7-era winner dipped below 84.5%; all 5 losses crashed through
     'NCAA_CBB': 0.80,  # no v7-era winner dipped below 84%; both losses crashed through
-    'WTA': 0.50,       # multi-set swings: Sherif dipped to 50% and won; 50% = 0 false stops
+    'WTA': 0.80,       # Andreeva loss gap-jumped 58%→25%; 80% saves $48; false-stop re-enters at 92%
 }
 DEFAULT_STOP_LOSS = 0.40
 
