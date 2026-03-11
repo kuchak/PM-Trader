@@ -620,8 +620,11 @@ class TradingBot:
                 logger.info(f"  💀 WRITE-OFF | {outcome[:25]} | {size:.1f} shr | PnL: ${-cost:+.2f} | Bank: ${self.bankroll:.2f}")
                 self._save()
                 continue
-            elif avg_price > 0 and cur_price <= STOP_LOSS.get(pos.get('strategy', ''), DEFAULT_STOP_LOSS):
-                action = "STOP_LOSS"
+            elif avg_price > 0:
+                _pos = self.open_positions.get(token_id, {})
+                _sl = STOP_LOSS.get(_pos.get('strategy', ''), DEFAULT_STOP_LOSS)
+                if cur_price <= _sl:
+                    action = "STOP_LOSS"
 
             if not action:
                 continue
