@@ -46,7 +46,7 @@ POLL_INTERVAL = 30   # seconds between cycles
 
 # Entry parameters (from backtest on 2-day dataset)
 ENTRY_THRESHOLD = 0.90
-MIN_MINS = {"15m": 3,  "1h": 10}   # must have at least this many minutes left
+MIN_MINS = {"15m": 3,  "1h": 15}   # must have at least this many minutes left
 MAX_MINS = {"15m": 13, "1h": 50}   # don't enter with more time than this (unstable early probs)
 
 # Exit parameters
@@ -783,7 +783,8 @@ class CryptoTrader:
             return True
         try:
             from py_clob_client.clob_types import OrderArgs, OrderType
-            args   = OrderArgs(price=price, size=pos["shares"], side="SELL",
+            # Sell at 0.01 floor — CLOB fills at best available bid (market sell)
+            args   = OrderArgs(price=0.01, size=pos["shares"], side="SELL",
                                token_id=pos["up_token_id"])
             signed = self.client.create_order(args)
 
