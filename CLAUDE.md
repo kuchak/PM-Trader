@@ -160,10 +160,10 @@ Passive data collector for BTC/ETH/SOL/XRP markets. No trading — build dataset
 | NBA | 91% | 0 min | **27%** | 97.8% (44-1) | Near-perfect |
 | NCAA_CBB | 93% | 60 min | **22%** | 96.2% (51-2) | 2 pre-v7 blowups |
 | ATP | 94% | 45 min | **18%** | 89.7% (26-3) | 3 historical losses |
-| WTT_Women | 88% | 0 min | **20%** | 100% | Limited data |
-| WTT_Men | 88% | 0 min | **20%** | 100% | Limited data |
+| WTT_Women | 88% | 0 min | **15%** | 100% | n=1 sample cap |
+| WTT_Men | 88% | 0 min | **15%** | 100% | n=1 sample cap |
 | CWBB | 90% | 45 min | **15%** | unproven | Thin markets |
-| NHL | 93% | 30 min | **15%** | unproven | 0 qualifying trades |
+| NHL | 90% | 30 min | **15%** | unproven | threshold lowered 93%→90% |
 
 ### Performance (161W/7L all-time, Feb 26 - Mar 10, 2026)
 - Post-v7 (Mar 7-10): 50W/0L, bankroll $305 → $474
@@ -188,11 +188,11 @@ Live trading bot for BTC/ETH/XRP 15m and 1h Up/Down markets. SOL 15m excluded (n
 | Market | Bet % | WR | ROI/bet | Tier |
 |--------|-------|----|---------|------|
 | BTC 1h | **30%** | 100% (12-0) | 7.8% | 1 |
-| BTC 15m | **29%** | 100% (10-0) | 7.4% | 1 |
-| XRP 1h | **28%** | 100% (10-0) | 6.0% | 1 |
-| ETH 15m | **8%** | 86% (6-1) | 4.0% | 2 |
+| BTC 15m | **10%** | 78% (14-4) | -0.1% | 3 |
+| XRP 1h | **30%** | 100% (13-0) | 4.0% | 1 |
+| ETH 15m | **10%** | 87% (13-2) | 0.3% | 4 |
 | XRP 15m | **8%** | 88% (7-1) | 2.5% | 2 |
-| ETH 1h | **8%** | 90% (9-1) | 2.4% | 2 |
+| ETH 1h | **15%** | 91% (10-1) | 1.9% | 3 |
 | SOL 15m | dropped | 71% (5-2) | -9.2% | — |
 | Target exit | 99% |
 | Wallet allocation | $150 (hard cap, prevents conflict with sports bot) |
@@ -214,6 +214,17 @@ Live trading bot for BTC/ETH/XRP 15m and 1h Up/Down markets. SOL 15m excluded (n
 - Sports bot operates on whatever remains above this line — no conflict
 
 ## Changelog
+
+### 2026-03-11: Performance-Aligned Bet Sizing (v10)
+- **Crypto**: Applied consistent tier framework based on actual WR + ROI from logs (Mar 9–11):
+  - XRP 1h: 28% → **30%** (Tier 1: 100% WR, 4.0% ROI, n=13 — matches BTC 1h criteria)
+  - ETH 1h: 8% → **15%** (Tier 3: 91% WR, 1.9% ROI — was severely undersized)
+  - ETH 15m: 8% → **10%** (Tier 4a: 87% WR, 0.3% ROI)
+  - BTC 15m: 29% → **10%** (demoted: 78% WR, -0.1% ROI post Mar-10 flash crash)
+  - XRP 15m: stays 8% (Tier 4b: 85% WR, 1.5% ROI — same tier as BTC 15m post-crash)
+- **Sports**: Tightened small-sample allocations and fixed dead threshold:
+  - WTT_Women/WTT_Men: 20% → **15%** (n=1 sample cap; 20% unwarranted on single trade)
+  - NHL: threshold 93% → **90%** (never triggered once in 2+ weeks at 93%)
 
 ### 2026-03-11: Per-Timeframe Stop-Loss (v9)
 - **Crypto**: `STOP_LOSS` changed from global 40% to per-timeframe dict: `{'15m': 0.82, '1h': 0.40}`

@@ -812,7 +812,7 @@ def main():
     print(f"  Crypto Trader — {mode}")
     print(f"  Targets: 15m + 1h Up/Down | BTC ETH SOL XRP")
     print(f"  Entry: >= {ENTRY_THRESHOLD:.0%} | Stop: 15m={STOP_LOSS['15m']:.0%} 1h={STOP_LOSS['1h']:.0%} | Target: {TARGET_EXIT:.0%}")
-    print(f"  Bet sizing: per-market % | BTC1h=30% BTC15m=29% XRP1h=28% others=8% | min ${BET_MIN:.0f}")
+    print(f"  Bet sizing: BTC1h={MARKET_BET_PCT[('BTC','1h')]:.0%} XRP1h={MARKET_BET_PCT[('XRP','1h')]:.0%} ETH1h={MARKET_BET_PCT[('ETH','1h')]:.0%} ETH15m={MARKET_BET_PCT[('ETH','15m')]:.0%} XRP15m={MARKET_BET_PCT[('XRP','15m')]:.0%} BTC15m={MARKET_BET_PCT[('BTC','15m')]:.0%} | min ${BET_MIN:.0f}")
     print(f"  State: {STATE_FILE}")
     print(f"{'='*60}\n")
 
