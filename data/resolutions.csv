@@ -1,0 +1,4 @@
+resolved_timestamp,event_name,league,game_id,market_type,outcome_name,won,max_implied_prob,max_clob_buy_price,first_seen_timestamp,last_seen_timestamp,minutes_tracked
+2026-03-11T03:31:02.944726+00:00,Counter-Strike: megoshort vs ex-Zero Tenacity (BO3) - BC Game Masters Group Stage,counter-strike,1381442,moneyline,megoshort,true,0.99,0,2026-03-11T03:25:07.959278+00:00,2026-03-11T03:27:30.747398+00:00,2.4
+2026-03-11T03:59:48.083375+00:00,Counter-Strike: megoshort vs ex-Zero Tenacity (BO3) - BC Game Masters Group Stage,counter-strike,1381442,moneyline,megoshort,true,0.99,0,2026-03-11T03:36:01.820255+00:00,2026-03-11T03:56:14.659802+00:00,20.2
+2026-03-11T04:10:43.796577+00:00,Timberwolves vs. Lakers,nba-2026,20023411,moneyline,Under,true,0.99,0.98,2026-03-11T03:25:07.959278+00:00,2026-03-11T04:07:06.954274+00:00,42.0
