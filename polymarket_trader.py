@@ -69,7 +69,7 @@ STRATEGIES = {
         'est_remaining_min': 60,
         'hist_winrate': 0.964,
         'scale_in': False,
-        'min_liquidity': 20000,
+        'min_liquidity': 25000,
     },
     'CWBB': {
         'slug_prefixes': {'cwbb-'},
@@ -79,7 +79,7 @@ STRATEGIES = {
         'est_remaining_min': 60,
         'hist_winrate': 0.947,
         'scale_in': False,
-        'min_liquidity': 20000,
+        'min_liquidity': 25000,
     },
     'NBA': {
         'slug_prefixes': {'nba-'},
@@ -394,6 +394,7 @@ class TradingBot:
         self.closed_positions = []
         self._load_state()
         self.entered_tokens = set()
+        self._api_exited = set()  # tokens already processed by check_exits_from_api
         self.scan_count = 0
         self.total_wagered = 0
         self.total_pnl = 0
@@ -464,7 +465,12 @@ class TradingBot:
             m = mkt_by_token.get(tid)
             if m:
                 clob = self._get_token_price(tid)
-                prob = clob if clob and clob > m.get('implied_prob', 0) else m.get('implied_prob', 0)
+                gamma = m.get('implied_prob', 0)
+                if clob and clob > 0:
+                    # Use min for stop-loss safety — stale Gamma can't mask a real drop
+                    prob = min(clob, gamma) if gamma > 0 else clob
+                else:
+                    prob = gamma
             else:
                 # Position not in live scan — game may have ended
                 # Query CLOB directly for current price
@@ -580,11 +586,28 @@ class TradingBot:
             if size < 0.1 or cur_price <= 0:
                 continue
 
+            # Skip tokens we already processed an API exit for
+            if token_id in self._api_exited:
+                continue
+
             action = None
             if cur_price >= 0.99:
                 action = "SELL_WIN"
             elif cur_price < 0.01:
-                logger.info(f"  💀 WRITE-OFF | {outcome[:25]} | {size:.1f} shr — resolved loss, skipping")
+                # Market resolved as a loss — record and clean up
+                cost = size * avg_price if avg_price > 0 else 0
+                pos = self.open_positions.get(token_id)
+                if pos:
+                    cost = pos['cost']
+                    self.closed_positions.append({
+                        **pos, 'pnl': -cost, 'won': False,
+                        'exit_price': 0, 'exit_ts': datetime.now(timezone.utc).isoformat()
+                    })
+                    del self.open_positions[token_id]
+                self.total_pnl -= cost
+                self._api_exited.add(token_id)
+                logger.info(f"  💀 WRITE-OFF | {outcome[:25]} | {size:.1f} shr | PnL: ${-cost:+.2f} | Bank: ${self.bankroll:.2f}")
+                self._save()
                 continue
             elif avg_price > 0 and cur_price <= 0.40:
                 action = "STOP_LOSS"
@@ -604,6 +627,7 @@ class TradingBot:
                 self.total_pnl += pnl
                 if token_id in self.open_positions:
                     del self.open_positions[token_id]
+                self._api_exited.add(token_id)
                 emoji = "✅" if action == "SELL_WIN" else "🛑"
                 tag = "WIN" if action == "SELL_WIN" else "STOP-LOSS"
                 logger.info(f"  {emoji} {tag} (API) | {outcome[:25]} | "
@@ -611,6 +635,7 @@ class TradingBot:
                     f"${cost:.2f} -> ${revenue:.2f} (PnL: ${pnl:+.2f}) | Bank: ${self.bankroll:.2f}")
                 self._save()
             elif success == "RESOLVED":
+                self._api_exited.add(token_id)
                 logger.info(f"  🏁 RESOLVED (API) | {outcome[:25]} — auto-cleaned")
     def _sell_position(self, token_id, price, size, pos):
         if self.dry_run:
@@ -675,11 +700,19 @@ class TradingBot:
             if m['liquidity'] < min_liq:
                 continue
 
+            # Verify price via CLOB before committing to entry
+            clob_price = self._get_token_price(tid)
+            if clob_price and clob_price > 0:
+                prob = min(prob, clob_price)  # use the more conservative price
+                if prob < cfg['entry_threshold']:
+                    logger.info(f"  ⛔ CLOB price {clob_price:.3f} < threshold for {m['outcome'][:25]} (Gamma: {m['implied_prob']:.3f})")
+                    continue
+
             evh = calc_ev_per_hour(prob, m['strategy'], m['game_elapsed'])
             if evh <= 0:
                 continue
 
-            cands.append({**m, 'ev_hour': evh, 'is_scale_in': False})
+            cands.append({**m, 'ev_hour': evh, 'is_scale_in': False, 'clob_price': clob_price})
 
         cands.sort(key=lambda x: -x['ev_hour'])
         return cands
