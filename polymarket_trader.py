@@ -39,6 +39,12 @@ MAX_TOTAL_EXPOSURE_PCT = 1.00
 MAX_PER_MARKET_PCT = 0.20
 DEFAULT_BET_PCT = 0.20
 
+# --- Stop-loss per sport (default 40%) ---
+STOP_LOSS = {
+    'NBA': 0.80,   # bimodal: winners hold >80%, losers collapse; saves ~$85 vs 40%
+}
+DEFAULT_STOP_LOSS = 0.40
+
 # --- Periods that mean game is NOT in progress ---
 NON_LIVE_PERIODS = {'FT', 'VFT', 'Final', 'CAN', 'POST', 'Scheduled', ''}
 
@@ -411,10 +417,12 @@ class TradingBot:
                      f"{MAX_PER_MARKET_PCT*100:.0f}% per market, "
                      f"{DEFAULT_BET_PCT*100:.0f}% per bet")
         for n, c in STRATEGIES.items():
+            sl = STOP_LOSS.get(n, DEFAULT_STOP_LOSS)
             logger.info(f"  {n}: >={c['entry_threshold']*100:.0f}%, "
+                f"bet {c.get('max_per_bet_pct', DEFAULT_BET_PCT)*100:.0f}%, "
+                f"stop {sl*100:.0f}%, "
                 f"min {c['min_elapsed_min']}m, "
-                f"scale={'Y' if c.get('scale_in') else 'N'}, "
-                f"slugs: {c['slug_prefixes']}")
+                f"scale={'Y' if c.get('scale_in') else 'N'}")
         logger.info(f"{'='*60}")
 
     def total_exposure(self):
@@ -496,9 +504,10 @@ class TradingBot:
                 else:
                     logger.info(f"  🔍 Off-scan price: {pos['outcome'][:25]} @ {prob:.3f}")
             action = None
+            stop = STOP_LOSS.get(pos.get('strategy', ''), DEFAULT_STOP_LOSS)
             if prob >= 0.99:
                 action = 'SELL_WIN'
-            elif prob <= 0.40:
+            elif prob <= stop:
                 action = 'SELL_LOSS'
             if not action:
                 continue
@@ -611,7 +620,7 @@ class TradingBot:
                 logger.info(f"  💀 WRITE-OFF | {outcome[:25]} | {size:.1f} shr | PnL: ${-cost:+.2f} | Bank: ${self.bankroll:.2f}")
                 self._save()
                 continue
-            elif avg_price > 0 and cur_price <= 0.40:
+            elif avg_price > 0 and cur_price <= STOP_LOSS.get(pos.get('strategy', ''), DEFAULT_STOP_LOSS):
                 action = "STOP_LOSS"
 
             if not action:
