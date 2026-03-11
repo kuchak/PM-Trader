@@ -58,12 +58,12 @@ TARGET_EXIT  = 0.99
 # Tier 2 (85-90% WR): standard allocation
 # SOL 15m dropped (71% WR, net loser)
 MARKET_BET_PCT = {
-    ('BTC', '1h'):  0.30,   # 100% WR, 7.8% ROI — best risk-adjusted, above WTA/NBA
-    ('BTC', '15m'): 0.29,   # 100% WR, 7.4% ROI
-    ('XRP', '1h'):  0.28,   # 100% WR, 6.0% ROI — matches WTA (same WR, higher ROI)
-    ('ETH', '15m'): 0.08,   # 86% WR, 4.0% ROI
-    ('XRP', '15m'): 0.08,   # 88% WR, 2.5% ROI
-    ('ETH', '1h'):  0.08,   # 90% WR, 2.4% ROI
+    ('BTC', '1h'):  0.30,   # Tier 1: 100% WR, 4.8% ROI, n=19
+    ('XRP', '1h'):  0.30,   # Tier 1: 100% WR, 4.0% ROI, n=13 — raised from 28%
+    ('ETH', '1h'):  0.15,   # Tier 3: 91% WR, 1.9% ROI, n=11 — raised from 8%
+    ('ETH', '15m'): 0.10,   # Tier 4a: 87% WR, 0.3% ROI — raised from 8%
+    ('XRP', '15m'): 0.08,   # Tier 4b: 85% WR, 1.5% ROI
+    ('BTC', '15m'): 0.10,   # Watch-and-see: 78% WR, flash-crash losses only — cut from 29%
 }
 BET_MIN      = 10.0    # minimum bet $10
 MAX_CONCURRENT = 6     # max open positions at once
@@ -311,7 +311,7 @@ class CryptoTrader:
         logger.info("=" * 60)
         logger.info(f"  Crypto Trader — {'DRY RUN' if dry_run else 'LIVE'}")
         logger.info(f"  Bankroll:   ${self.bankroll:.2f}")
-        logger.info(f"  Bet sizes:  BTC1h={MARKET_BET_PCT[('BTC','1h')]:.0%} BTC15m={MARKET_BET_PCT[('BTC','15m')]:.0%} XRP1h={MARKET_BET_PCT[('XRP','1h')]:.0%} others=8%")
+        logger.info(f"  Bet sizes:  BTC1h={MARKET_BET_PCT[('BTC','1h')]:.0%} XRP1h={MARKET_BET_PCT[('XRP','1h')]:.0%} ETH1h={MARKET_BET_PCT[('ETH','1h')]:.0%} ETH15m={MARKET_BET_PCT[('ETH','15m')]:.0%} XRP15m={MARKET_BET_PCT[('XRP','15m')]:.0%} BTC15m={MARKET_BET_PCT[('BTC','15m')]:.0%}")
         logger.info(f"  Max concurrent: {MAX_CONCURRENT}  |  Stop: 15m={STOP_LOSS['15m']:.0%} 1h={STOP_LOSS['1h']:.0%}  Target: {TARGET_EXIT:.0%}")
         logger.info(f"  Entry:      >= {ENTRY_THRESHOLD:.0%}  |  15m: {MIN_MINS['15m']}-{MAX_MINS['15m']}min  "
                     f"1h: {MIN_MINS['1h']}-{MAX_MINS['1h']}min")

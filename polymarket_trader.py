@@ -92,8 +92,8 @@ STRATEGIES = {
     },
     'NHL': {
         'slug_prefixes': {'nhl-'},
-        'entry_threshold': 0.93,
-        'max_per_bet_pct': 0.15,   # unproven, 0 qualifying trades
+        'entry_threshold': 0.90,
+        'max_per_bet_pct': 0.15,   # unproven, 0 qualifying trades — threshold lowered 93%→90%
         'min_elapsed_min': 30,
         'est_remaining_min': 30,
         'hist_winrate': 0.90,
@@ -102,7 +102,7 @@ STRATEGIES = {
     'WTT_Women': {
         'slug_prefixes': {'wttwmn-'},
         'entry_threshold': 0.88,
-        'max_per_bet_pct': 0.20,
+        'max_per_bet_pct': 0.15,   # n=1 sample cap
         'min_elapsed_min': 0,
         'est_remaining_min': 30,
         'hist_winrate': 1.00,
@@ -111,7 +111,7 @@ STRATEGIES = {
     'WTT_Men': {
         'slug_prefixes': {'wttmen-'},
         'entry_threshold': 0.88,
-        'max_per_bet_pct': 0.20,
+        'max_per_bet_pct': 0.15,   # n=1 sample cap
         'min_elapsed_min': 0,
         'est_remaining_min': 30,
         'hist_winrate': 1.00,
