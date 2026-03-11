@@ -50,7 +50,7 @@ MIN_MINS = {"15m": 0,  "1h": 0}    # no minimum — prob threshold is the signal
 MAX_MINS = {"15m": 13, "1h": 50}   # don't enter with more time than this (unstable early probs)
 
 # Exit parameters
-STOP_LOSS    = {'15m': 0.82, '1h': 0.40}   # 15m: tight (no recovery time); 1h: loose (97.4% WR)
+STOP_LOSS    = {'15m': 0.85, '1h': 0.85}   # uniform 85% — worst winner dips: 85-91.5% across all markets
 TARGET_EXIT  = 0.99
 
 # Position sizing — per-market percentages of available bankroll
