@@ -182,7 +182,7 @@ Live trading bot for BTC/ETH/XRP 15m and 1h Up/Down markets. SOL 15m excluded (n
 | 1h time window | 10–50 min remaining |
 | Min bet | $10 |
 | Max concurrent | 6 positions |
-| Stop-loss | 40% |
+| Stop-loss | 15m: 82% / 1h: 40% |
 
 ### Bet Sizing (per-market % of available bankroll — Tier 1 gets larger allocation)
 | Market | Bet % | WR | ROI/bet | Tier |
@@ -214,6 +214,13 @@ Live trading bot for BTC/ETH/XRP 15m and 1h Up/Down markets. SOL 15m excluded (n
 - Sports bot operates on whatever remains above this line — no conflict
 
 ## Changelog
+
+### 2026-03-11: Per-Timeframe Stop-Loss (v9)
+- **Crypto**: `STOP_LOSS` changed from global 40% to per-timeframe dict: `{'15m': 0.82, '1h': 0.40}`
+  - 15m markets: 82% stop — backtested on 83k rows; saves 5/5 big losses, only 9% false-stop rate, net +$15.29 vs 40%
+  - 1h markets: keep 40% — 97.4% WR, no data supporting tighter stop
+  - Rationale: 15m have no recovery time (gap-throughs hit 92%→4% in one tick); 1h markets recover
+- **Crypto**: Fixed startup display to show per-timeframe stop values and updated bet sizing display (30/29/28%)
 
 ### 2026-03-10: Per-Market Bet Sizing (v8)
 - **Sports**: per-sport `max_per_bet_pct` now wired into bet calculation (was ignored, used DEFAULT_BET_PCT=20% for all)

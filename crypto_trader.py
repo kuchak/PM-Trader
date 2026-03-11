@@ -50,7 +50,7 @@ MIN_MINS = {"15m": 3,  "1h": 10}   # must have at least this many minutes left
 MAX_MINS = {"15m": 13, "1h": 50}   # don't enter with more time than this (unstable early probs)
 
 # Exit parameters
-STOP_LOSS    = 0.40
+STOP_LOSS    = {'15m': 0.82, '1h': 0.40}   # 15m: tight (no recovery time); 1h: loose (97.4% WR)
 TARGET_EXIT  = 0.99
 
 # Position sizing — per-market percentages of available bankroll
@@ -312,7 +312,7 @@ class CryptoTrader:
         logger.info(f"  Crypto Trader — {'DRY RUN' if dry_run else 'LIVE'}")
         logger.info(f"  Bankroll:   ${self.bankroll:.2f}")
         logger.info(f"  Bet sizes:  BTC1h={MARKET_BET_PCT[('BTC','1h')]:.0%} BTC15m={MARKET_BET_PCT[('BTC','15m')]:.0%} XRP1h={MARKET_BET_PCT[('XRP','1h')]:.0%} others=8%")
-        logger.info(f"  Max concurrent: {MAX_CONCURRENT}  |  Stop: {STOP_LOSS:.0%}  Target: {TARGET_EXIT:.0%}")
+        logger.info(f"  Max concurrent: {MAX_CONCURRENT}  |  Stop: 15m={STOP_LOSS['15m']:.0%} 1h={STOP_LOSS['1h']:.0%}  Target: {TARGET_EXIT:.0%}")
         logger.info(f"  Entry:      >= {ENTRY_THRESHOLD:.0%}  |  15m: {MIN_MINS['15m']}-{MAX_MINS['15m']}min  "
                     f"1h: {MIN_MINS['1h']}-{MAX_MINS['1h']}min")
         logger.info("=" * 60)
@@ -423,8 +423,8 @@ class CryptoTrader:
                 action     = "TARGET"
                 exit_price = min(cur_prob, 0.99)
 
-            # Stop loss
-            elif cur_prob <= STOP_LOSS:
+            # Stop loss (per-timeframe: 15m=82%, 1h=40%)
+            elif cur_prob <= STOP_LOSS[pos['tf']]:
                 action     = "STOP"
                 exit_price = max(cur_prob, 0.01)
 
@@ -563,7 +563,7 @@ class CryptoTrader:
                 del self.positions[slug]
                 exits += 1
                 continue
-            elif is_tracked and cur_price <= STOP_LOSS:
+            elif is_tracked and cur_price <= STOP_LOSS[pos['tf']]:
                 action = "STOP"
 
             if not action:
@@ -811,8 +811,8 @@ def main():
     print(f"\n{'='*60}")
     print(f"  Crypto Trader — {mode}")
     print(f"  Targets: 15m + 1h Up/Down | BTC ETH SOL XRP")
-    print(f"  Entry: >= {ENTRY_THRESHOLD:.0%} | Stop: {STOP_LOSS:.0%} | Target: {TARGET_EXIT:.0%}")
-    print(f"  Bet sizing: per-market % | BTC1h=25% BTC15m=23% XRP1h=21% others=8% | min ${BET_MIN:.0f}")
+    print(f"  Entry: >= {ENTRY_THRESHOLD:.0%} | Stop: 15m={STOP_LOSS['15m']:.0%} 1h={STOP_LOSS['1h']:.0%} | Target: {TARGET_EXIT:.0%}")
+    print(f"  Bet sizing: per-market % | BTC1h=30% BTC15m=29% XRP1h=28% others=8% | min ${BET_MIN:.0f}")
     print(f"  State: {STATE_FILE}")
     print(f"{'='*60}\n")
 
