@@ -294,6 +294,7 @@ class CryptoTrader:
         self.bankroll = self.state["bankroll"]
         # positions: { event_slug: {asset, tf, entry_prob, shares, cost, entry_time, up_token_id} }
         self.positions = self.state.get("positions", {})
+        self.closed_trades = self.state.get("closed_trades", [])
         # Token IDs of orphan positions already handled this session — prevents re-processing
         # a stuck position every sweep cycle when _sell() returns "RESOLVED" but the data API
         # keeps showing it (Polymarket auto-redeem lag).
@@ -324,6 +325,24 @@ class CryptoTrader:
     @property
     def total_exposure(self):
         return sum(p["cost"] for p in self.positions.values())
+
+    def _record_closed_trade(self, slug, pos, exit_price, pnl, won, exit_reason):
+        """Append a closed trade record for historical analysis."""
+        now_iso = datetime.now(timezone.utc).isoformat()
+        self.closed_trades.append({
+            "slug":        slug,
+            "asset":       pos.get("asset", "?"),
+            "tf":          pos.get("tf", "?"),
+            "entry_price": pos.get("entry_prob", 0),
+            "entry_ts":    pos.get("entry_time", ""),
+            "exit_price":  exit_price,
+            "exit_ts":     now_iso,
+            "shares":      pos.get("shares", 0),
+            "cost":        pos.get("cost", 0),
+            "pnl":         pnl,
+            "won":         won,
+            "exit_reason": exit_reason,
+        })
 
     def run(self):
         cycle = 0
@@ -383,6 +402,7 @@ class CryptoTrader:
         # 3. Persist state
         self.state["bankroll"]  = self.bankroll
         self.state["positions"] = self.positions
+        self.state["closed_trades"] = self.closed_trades
         save_state(self.state)
 
         logger.info(f"Cycle {cycle_num}: {len(events)} live  |  "
@@ -435,6 +455,7 @@ class CryptoTrader:
                 self.state["losses"] = self.state.get("losses", 0) + 1
                 logger.info(f"  💀 WRITE-OFF [closed/lost] {pos['asset']} {pos['tf']} "
                             f"| cost=${cost:.2f} PnL: ${-cost:+.2f}")
+                self._record_closed_trade(slug, pos, cur_prob, -cost, False, "write_off")
                 del self.positions[slug]
                 exits += 1
                 continue
@@ -468,6 +489,7 @@ class CryptoTrader:
                     self.state["losses"] = self.state.get("losses",0) + (0 if won else 1)
                     logger.info(f"  {icon} AUTO-RESOLVED {pos['asset']} {pos['tf']} "
                                 f"| cost=${cost:.2f} PnL: ${pnl:+.2f}")
+                    self._record_closed_trade(slug, pos, exit_price, pnl, won, "auto_resolved")
                     del self.positions[slug]
                     exits += 1
                 elif success or self.dry_run:
@@ -480,6 +502,11 @@ class CryptoTrader:
                     self.state["pnl"]    = self.state.get("pnl", 0) + pnl
                     self.state["wins"]   = self.state.get("wins",  0) + (1 if won else 0)
                     self.state["losses"] = self.state.get("losses",0) + (0 if won else 1)
+                    # Map action to exit_reason
+                    reason_map = {"TARGET": "target", "STOP": "stop_loss",
+                                  "RESOLVED": "resolved", "EXPIRING": "expiring"}
+                    self._record_closed_trade(slug, pos, exit_price, pnl, won,
+                                              reason_map.get(action, action.lower()))
                     logger.info(f"  {icon} EXIT [{action}] {pos['asset']} {pos['tf']} "
                                 f"| entry={pos['entry_prob']:.1%} → exit={exit_price:.1%} "
                                 f"| ${cost:.2f} → ${revenue:.2f} (PnL: ${pnl:+.2f}) "
@@ -560,6 +587,7 @@ class CryptoTrader:
                             f"| {size:.1f} shr @ {cur_price:.3f} — writing off")
                 self.state["pnl"]    = self.state.get("pnl",    0) - pos["cost"]
                 self.state["losses"] = self.state.get("losses", 0) + 1
+                self._record_closed_trade(slug, pos, cur_price, -pos["cost"], False, "write_off")
                 del self.positions[slug]
                 exits += 1
                 continue
@@ -588,6 +616,8 @@ class CryptoTrader:
                 self.state["wins"]   = self.state.get("wins",   0) + (1 if won else 0)
                 self.state["losses"] = self.state.get("losses", 0) + (0 if won else 1)
                 icon = "✅" if won else "🛑"
+                api_reason = "target" if action == "TARGET" else "stop_loss"
+                self._record_closed_trade(slug or token_id, pos, sell_price, pnl, won, api_reason)
                 logger.info(f"  {icon} {'WIN' if won else 'STOP'} (API) {label} "
                             f"| ${cost:.2f} → ${revenue:.2f} (PnL: ${pnl:+.2f}) "
                             f"| Bank: ${self.bankroll:.2f}")
@@ -600,10 +630,12 @@ class CryptoTrader:
                 if is_tracked:
                     # Tracked position — calculate PnL (USDC already credited by Polymarket)
                     cost = pos["cost"]
-                    pnl  = pos["shares"] - cost if action == "TARGET" else -cost
+                    won_resolved = action == "TARGET"
+                    pnl  = pos["shares"] - cost if won_resolved else -cost
                     self.state["pnl"]    = self.state.get("pnl",    0) + pnl
-                    self.state["wins"]   = self.state.get("wins",    0) + (1 if action == "TARGET" else 0)
-                    self.state["losses"] = self.state.get("losses",  0) + (0 if action == "TARGET" else 1)
+                    self.state["wins"]   = self.state.get("wins",    0) + (1 if won_resolved else 0)
+                    self.state["losses"] = self.state.get("losses",  0) + (0 if won_resolved else 1)
+                    self._record_closed_trade(slug, pos, sell_price, pnl, won_resolved, "auto_resolved")
                     logger.info(f"  🏁 RESOLVED (API) {label} PnL: ${pnl:+.2f}")
                     del self.positions[slug]
                 else:
