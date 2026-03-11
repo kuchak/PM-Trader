@@ -46,7 +46,7 @@ POLL_INTERVAL = 30   # seconds between cycles
 
 # Entry parameters (from backtest on 2-day dataset)
 ENTRY_THRESHOLD = 0.90
-MIN_MINS = {"15m": 2,  "1h": 5}    # need time to exit; 0 caused re-entry in final seconds → write-off
+MIN_MINS = {"15m": 2,  "1h": 2}    # need ~2 cycles (60s) to execute sell before market closes
 MAX_MINS = {"15m": 13, "1h": 50}   # don't enter with more time than this (unstable early probs)
 
 # Exit parameters
