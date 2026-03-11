@@ -1,22 +1,23 @@
 {
-  "open_positions": {},
-  "market_positions": {
-    "1502745": 63.446401800000004,
-    "1504632": 66.0622106,
-    "1466478": 69.4959238,
-    "1471734": 77.6293392,
-    "1471701": 77.37158564,
-    "1479683": 67.4029220832,
-    "1500230": 13.108348999999976,
-    "1479682": 63.8153682,
-    "1528425": 64.1283106,
-    "1530296": 73.5436662
-  },
-  "entered_tokens": [],
-  "bankroll": 438.2353853,
-  "total_wagered": 0,
-  "total_pnl": 0.0,
-  "closed_positions": [
+  "bankroll": 325.9118371,
+  "wagered": 0,
+  "pnl": 0.6671587000000034,
+  "total_exposure": 85.8405108,
+  "open": [
+    {
+      "token_id": "33057481616918070342659111236919562188076261696758213635136208090250284663441",
+      "event": "Hersonissos 2: Lorenzo Carboni vs Federico Iannaccone",
+      "outcome": "Federico Iannaccone",
+      "strategy": "ATP",
+      "entry_price": 0.95,
+      "shares": 90.35843242105264,
+      "cost": 85.8405108,
+      "market_id": "1537747",
+      "scale_count": 0,
+      "entry_ts": "2026-03-10T14:13:23.799255+00:00"
+    }
+  ],
+  "closed": [
     {
       "token_id": "110160993152630288476124878434798786173354375147203462371025920225519907890946",
       "event": "Butler Bulldogs vs. DePaul Blue Demons",
