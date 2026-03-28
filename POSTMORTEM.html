@@ -82,30 +82,48 @@
 
 <div class="cards">
   <div class="card">
+    <div class="label">Starting Capital</div>
+    <div class="value" style="color:#60a5fa">$360</div>
+    <div class="detail">Single deposit, Feb 26</div>
+  </div>
+  <div class="card">
+    <div class="label">Peak Value</div>
+    <div class="value" style="color:#4ade80">$438</div>
+    <div class="detail">Mar 11, after 50-0 run</div>
+  </div>
+  <div class="card">
+    <div class="label">Current Value</div>
+    <div class="value" style="color:#f87171">~$108</div>
+    <div class="detail">$74 cash + $35 open positions</div>
+  </div>
+  <div class="card">
+    <div class="label">Total Lost</div>
+    <div class="value" style="color:#f87171">-$252</div>
+    <div class="detail">70% of capital gone</div>
+  </div>
+</div>
+
+<div class="cards" style="grid-template-columns: repeat(3, 1fr);">
+  <div class="card">
     <div class="label">Total Trades</div>
-    <div class="value" style="color:#60a5fa">1,214</div>
-    <div class="detail">Across 3 bots, 18 days</div>
+    <div class="value" style="color:#60a5fa">1,265</div>
+    <div class="detail">Across 3 bots, 30 days</div>
   </div>
   <div class="card">
-    <div class="label">Win Rate</div>
-    <div class="value" style="color:#fbbf24">85.2%</div>
-    <div class="detail">1,034W / 180L</div>
+    <div class="label">Overall Record</div>
+    <div class="value" style="color:#fbbf24">1,111W/154L</div>
+    <div class="detail">87.8% win rate</div>
   </div>
   <div class="card">
-    <div class="label">Total PnL</div>
-    <div class="value" style="color:#f87171">-$107</div>
-    <div class="detail">On $15,025 wagered</div>
-  </div>
-  <div class="card">
-    <div class="label">ROI</div>
-    <div class="value" style="color:#f87171">-0.71%</div>
-    <div class="detail">Net loss despite 85% WR</div>
+    <div class="label">Realized PnL</div>
+    <div class="value" style="color:#f87171">-$117</div>
+    <div class="detail">Phase 2 wiped out Phase 1 gains</div>
   </div>
 </div>
 
 <div class="callout red">
-  <strong>The Core Problem: Asymmetric Payoffs</strong>
-  Average win: +$0.56 (entries at 90-97c, exits at 99-100c). Average loss: -$2.70 (full position wipeouts when markets resolve against us). An 85% win rate isn't enough when losses are 5x larger than wins.
+  <strong>The Core Problem: A Perfect Start Masked Fatal Flaws</strong>
+  Phase 1 (old sports bot) went 50-0 and made +$151. Then everything fell apart: the new sports bot went 27-23 (-$162), crypto lost -$107 despite 85% WR, and tennis broke even. The 50-0 streak was real alpha; the subsequent bots were over-engineered and under-tested. We lost 70% of our capital — from $360 down to ~$108.
 </div>
 
 <!-- ============================================================ -->
@@ -145,14 +163,62 @@
   <tr><td>NHL</td><td class="num">90%</td><td class="num">30 min</td><td class="num">15%</td><td class="num">80%</td></tr>
 </table>
 
-<div class="callout blue">
-  <strong>Historical Performance (CLAUDE.md changelog, pre-CSV era)</strong>
-  161W / 7L all-time (Feb 26 — Mar 10). Post-v7 run: 50W / 0L, bankroll $305 → $474. These trades predate the current CSV file. Only 1 trade exists in the current trade log.
+<h3>Phase 1: The Golden Run (Feb 26 — Mar 11)</h3>
+<div class="cards" style="grid-template-columns: repeat(4, 1fr);">
+  <div class="card"><div class="label">Record</div><div class="value" style="color:#4ade80">50-0</div><div class="detail">Perfect record</div></div>
+  <div class="card"><div class="label">PnL</div><div class="value" style="color:#4ade80">+$151</div><div class="detail">On $3,490 wagered</div></div>
+  <div class="card"><div class="label">Start</div><div class="value" style="color:#fff">$360</div></div>
+  <div class="card"><div class="label">End</div><div class="value" style="color:#4ade80">$438</div></div>
+</div>
+<table>
+  <tr><th>Sport</th><th class="num">W</th><th class="num">L</th><th class="num">WR</th><th class="num">PnL</th></tr>
+  <tr><td>NBA</td><td class="num">20</td><td class="num">0</td><td class="num success">100%</td><td class="num success">+$71.82</td></tr>
+  <tr><td>NCAA Basketball</td><td class="num">23</td><td class="num">0</td><td class="num success">100%</td><td class="num success">+$59.66</td></tr>
+  <tr><td>WTA Tennis</td><td class="num">4</td><td class="num">0</td><td class="num success">100%</td><td class="num success">+$13.94</td></tr>
+  <tr><td>ATP Tennis</td><td class="num">3</td><td class="num">0</td><td class="num success">100%</td><td class="num success">+$5.87</td></tr>
+</table>
+<p>The original bot was simple and it worked. Live in-play favorites at 90%+ rarely lose. NBA and NCAA were the workhorses.</p>
+
+<h3>Phase 2: The Collapse (Mar 11 — Mar 28)</h3>
+<div class="cards" style="grid-template-columns: repeat(4, 1fr);">
+  <div class="card"><div class="label">Record</div><div class="value" style="color:#f87171">27-23</div><div class="detail">54% win rate</div></div>
+  <div class="card"><div class="label">PnL</div><div class="value" style="color:#f87171">-$162</div><div class="detail">Wiped out all Phase 1 gains</div></div>
+  <div class="card"><div class="label">Start</div><div class="value" style="color:#fff">$438</div></div>
+  <div class="card"><div class="label">End</div><div class="value" style="color:#f87171">$6.34</div></div>
 </div>
 
-<h3>What Happened</h3>
-<p>The sports bot was the <strong>star performer</strong> early on. From Feb 26 to Mar 10 it went 161-7 and nearly doubled the bankroll. The key insight — live in-play favorites at 90%+ rarely lose — proved correct across NBA, NCAA, and WTA.</p>
-<p>However, the trade CSV was reset at some point, so only 1 trade is recorded in the current file (a $0.37 win on Alabama vs Michigan, Mar 28). The bot is still running but trading volume appears to have dropped significantly as sports seasons wind down.</p>
+<div class="callout red">
+  <strong>Two NBA Blowups: -$110 Combined</strong>
+  Pacers vs Kings (-$55.63) and Bulls vs Warriors (-$54.26) were catastrophic single-game losses. These two trades alone account for most of the damage. The bot was betting at similar thresholds but the new version's risk management failed — stop-losses didn't trigger fast enough or position sizes were too large relative to the shrinking bankroll.
+</div>
+
+<p><strong>All 23 losses in Phase 2:</strong></p>
+<table>
+  <tr><th>Event</th><th class="num">PnL</th></tr>
+  <tr><td style="color:#f87171; font-weight:600">Pacers vs. Kings (NBA)</td><td class="num danger" style="font-weight:700">-$55.63</td></tr>
+  <tr><td style="color:#f87171; font-weight:600">Bulls vs. Warriors (NBA)</td><td class="num danger" style="font-weight:700">-$54.26</td></tr>
+  <tr><td>Thunder vs. Magic</td><td class="num danger">-$7.69</td></tr>
+  <tr><td>NC State vs. Texas</td><td class="num danger">-$7.95</td></tr>
+  <tr><td>G. Washington vs. Saint Louis</td><td class="num danger">-$7.85</td></tr>
+  <tr><td>VCU vs. North Carolina</td><td class="num danger">-$7.37</td></tr>
+  <tr><td>UNCW vs. Yale</td><td class="num danger">-$7.26</td></tr>
+  <tr><td>High Point vs. Wisconsin</td><td class="num danger">-$5.19</td></tr>
+  <tr><td>Knicks vs. Nets</td><td class="num danger">-$5.26</td></tr>
+  <tr><td>Trail Blazers vs. 76ers</td><td class="num danger">-$4.69</td></tr>
+  <tr><td>Wisconsin vs. Illinois</td><td class="num danger">-$4.32</td></tr>
+  <tr><td>Houston vs. Arizona</td><td class="num danger">-$4.14</td></tr>
+  <tr><td>Celtics vs. Grizzlies</td><td class="num danger">-$4.18</td></tr>
+  <tr><td>Ole Miss vs. Texas</td><td class="num danger">-$4.05</td></tr>
+  <tr><td>Purdue vs. UCLA</td><td class="num danger">-$3.42</td></tr>
+  <tr><td>Jazz vs. Kings</td><td class="num danger">-$3.71</td></tr>
+  <tr><td>Bulls vs. Thunder</td><td class="num danger">-$3.12</td></tr>
+  <tr><td>Mavericks vs. Grizzlies</td><td class="num danger">-$2.81</td></tr>
+  <tr><td>Bulls vs. Clippers</td><td class="num danger">-$2.52</td></tr>
+  <tr><td>Knicks vs. Pacers</td><td class="num danger">-$2.47</td></tr>
+  <tr><td>Pistons vs. Raptors</td><td class="num danger">-$2.03</td></tr>
+  <tr><td>Penn vs. Yale</td><td class="num danger">-$2.01</td></tr>
+  <tr><td>Massachusetts vs. Miami OH</td><td class="num danger">-$1.96</td></tr>
+</table>
 
 <!-- ============================================================ -->
 <h2>Bot 2: Crypto Trader</h2>
@@ -407,38 +473,48 @@
 <h2>Key Lessons & What Didn't Work</h2>
 
 <div class="callout red">
-  <strong>1. High win rate ≠ profit</strong>
-  85% WR across 1,214 trades and still net negative. When you buy at 90c+ and sell at 99-100c, your upside is capped at ~10c per share. But your downside is the full 90c+ when a market resolves against you. You need >90% WR just to break even at these entry prices.
+  <strong>1. The old bot worked. The new bot didn't.</strong>
+  Phase 1 went 50-0 with simple rules. Phase 2 went 27-23 after the bot was rewritten. The complexity added with per-sport thresholds, per-sport bet sizing, and new sports categories introduced more losing conditions than it fixed. Sometimes simpler is better.
 </div>
 
 <div class="callout red">
-  <strong>2. 1-hour crypto markets are a trap</strong>
-  They look safe (88%+ WR) but produce the catastrophic losses. A 90% probability can go to 0% in a single resolution tick with no time to exit. 15m markets are actually safer because the stop-loss at 82% has time to trigger.
+  <strong>2. Two trades destroyed everything</strong>
+  Pacers vs Kings (-$55.63) and Bulls vs Warriors (-$54.26) — these two NBA losses alone represent 68% of the sports bot's total losses. Position sizing relative to bankroll was way too aggressive. A single loss shouldn't be able to wipe out 50+ wins.
 </div>
 
 <div class="callout red">
-  <strong>3. Re-entering losing markets is devastating</strong>
-  The March 11 XRP loss ($110) came from re-entering the same market after the first exit. If the market already signaled danger, going back in doubles the damage.
+  <strong>3. High win rate ≠ profit in crypto</strong>
+  85% WR across 1,161 crypto trades and still -$107. When you buy at 90c+ and sell at 99c, upside is ~10c per share. Downside is the full 90c+ when a market resolves against you. You need >90% WR just to break even.
+</div>
+
+<div class="callout red">
+  <strong>4. 1-hour crypto markets are a trap</strong>
+  They look safe (88%+ WR) but produce catastrophic losses. XRP 1h lost $168 despite 88.4% WR. A 90% probability can go to 0% in one resolution tick with no time to exit.
+</div>
+
+<div class="callout red">
+  <strong>5. No bankroll isolation between bots</strong>
+  All three bots drew from the same Polymarket wallet. When crypto burned $107 and sports burned $162, it drained the tennis bot's operating capital too. Each bot should have had a hard-isolated allocation.
 </div>
 
 <div class="callout yellow">
-  <strong>4. Backtests overestimate live performance</strong>
-  Tennis tiers were backtested at 90-96% WR on 105k matches. Live performance: 82.7%. The gap is due to: (a) slippage in entry prices, (b) auto-resolution before exits trigger, (c) top-player comebacks that are rare in aggregate but common enough to erode edge.
+  <strong>6. Backtests overestimate live performance</strong>
+  Tennis tiers were backtested at 90-96% WR on 105k matches. Live: 82.7%. Sports Phase 1 was 100%. Phase 2: 54%. The gap comes from slippage, auto-resolution before exits, market conditions changing, and over-fitting to historical data.
 </div>
 
 <div class="callout yellow">
-  <strong>5. Top players come back</strong>
-  The tennis bot's biggest blind spot. Swiatek, Medvedev, Gauff losing Set 1 is a buying opportunity for the market — not a signal that they'll lose. The strategy needs a "top player discount" that reduces position size or skips entries when the losing player is top-10.
+  <strong>7. Top tennis players come back</strong>
+  Swiatek, Medvedev, Gauff all lost Set 1 but won the match. The strategy needs to skip entries when the losing player is top-10.
 </div>
 
 <div class="callout green">
-  <strong>6. Sports in-play betting works (when available)</strong>
-  161W/7L (95.8% WR) on live sports pre-March 10. The edge is real: once a team leads by enough in a live game, comebacks are genuinely rare. The challenge is market availability — Polymarket's sports coverage is seasonal and thin.
+  <strong>8. The original simple strategy had real alpha</strong>
+  50-0, +$151, +42% return in 2 weeks. Live in-play sports favorites at 90%+ with conservative sizing worked beautifully. The lesson: don't fix what isn't broken.
 </div>
 
 <div class="callout green">
-  <strong>7. Tier S tennis is profitable</strong>
-  4-0, +$15.94. The highest-confidence conditions (seeded player + huge S1 margin, or very high ranking ratio) held up. The losses all came from Tier A/B/C — the lower tiers where backtested edge is thinner.
+  <strong>9. Tier S tennis conditions held up</strong>
+  4-0, +$15.94. The highest-confidence tier (seeded player + huge S1 margin) worked. Only the lower tiers bled money.
 </div>
 
 <!-- ============================================================ -->
@@ -463,7 +539,7 @@
 </table>
 
 <hr class="divider">
-<p style="color:#666; text-align:center; font-size:0.85em; margin-top:40px;">Generated March 28, 2026. Data sourced from trade CSV files (source of truth), bot source code, and CLAUDE.md changelog.</p>
+<p style="color:#666; text-align:center; font-size:0.85em; margin-top:40px;">Generated March 28, 2026. Data sourced from trade CSV files, trader_logs/ JSON snapshots, bot state files, bot source code, and CLAUDE.md changelog. All financial figures verified against multiple data sources.</p>
 
 </div>
 </body>
