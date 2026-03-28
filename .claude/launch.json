@@ -1,0 +1,29 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "monitor",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["polymarket_monitor.py"],
+      "port": 8001
+    },
+    {
+      "name": "trader",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["polymarket_trader.py", "--no-confirm"],
+      "port": 8002
+    },
+    {
+      "name": "whale-tracker",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["whale-tracker/whale_tracker.py"],
+      "port": 8003
+    },
+    {
+      "name": "copy-trade-monitor",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["copy-trade-monitor/copy_trade_monitor.py"],
+      "port": 8004
+    }
+  ]
+}

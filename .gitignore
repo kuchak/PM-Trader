@@ -1,0 +1,26 @@
+# Secrets
+.env
+.env.bak
+
+# Large data files
+data/market_snapshots.csv
+data/market_snapshots.csv.gz
+data/*.bak
+data/crypto_snapshots.csv
+data/weather_snapshots.csv
+
+# Runtime state (changes every cycle)
+data/heartbeat.txt
+data/state.json
+data/crypto_state.json
+data/weather_state.json
+
+# Large state/resolution files
+data/*_bot_state.json
+data/*_resolutions.csv
+data/market_snapshots.csv
+
+# Logs
+monitor.log
+*.log
+.env.backup

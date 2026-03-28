@@ -1,0 +1,2 @@
+exit_ts,strategy,event,outcome,entry_price,exit_price,shares,cost,pnl,won,exit_reason,entry_ts,event_slug,market_id,token_id
+2026-03-28T01:49:02.608366+00:00,NCAA_CBB,Alabama Crimson Tide vs. Michigan Wolverines,Michigan Wolverines,0.95,0.99,9.279575408842106,8.8155966384,0.3748,True,API_WIN,2026-03-28T01:25:17.090887+00:00,,1688876,84031203592002917334262470868576093775510312558710425317269896203693659940128
